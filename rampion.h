@@ -29,6 +29,52 @@ int compStr(char s1[], char s2[]){
 	}
     return s1[i] - s2[i];
 }
+//**copySubStr**
+//Copies a substring from src to dest using subStart and subEnd as indexes. Copies at most maxLen chars, not including the NULL pointer
+int copySubStr(char src[], char dest[], int srcStart, int srcEnd, int maxLen);
+int copySubStr(char src[], char dest[], int srcStart, int srcEnd, int maxLen){
+    int iter, i;
+
+    //Make sure start is greater than end
+    if (srcStart <= srcEnd)
+        return -1;
+
+    //Make sure end is less than maxLen
+    if (srcEnd > maxLen)
+        return -2;
+
+    //If srcEnd is -1, go to the end of the array
+    if (srcEnd == -1)
+        srcEnd = strlen(src);
+
+    //Copy substring bounded by srcStart and srcEnd to dest
+    for (iter = srcStart, i = 0; iter <= srcEnd && src[iter] != '\0' && i < maxLen; iter++, i++){
+        dest[i] = src[iter];
+    }
+
+    dest[i] = '\0';
+
+    //Return length of dest
+    return i;
+}
+//**indexOfStr**
+//Finds and returns the index of the first char of subStr in mainStr, or -1 if not found
+int indexOfStr(char *mainStr, char *subStr);
+int indexOfStr(char *mainStr, char *subStr){
+    int index;
+    char *result;
+
+    //If the substring is in the main string, find and return the index
+    if (result = strstr(mainStr, subStr) != NULL)
+    {
+        index = result - mainStr;
+    }
+    //If no match, return -1
+    else return -1;
+
+    //Shouldn't happen, but as a safety net
+    return 0;
+}
 //**stof**
 double stof(char s[]);
 double stof(char s[]){
