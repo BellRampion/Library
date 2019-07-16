@@ -35,8 +35,8 @@ int copySubStr(char src[], char dest[], int srcStart, int srcEnd, int maxLen);
 int copySubStr(char src[], char dest[], int srcStart, int srcEnd, int maxLen){
     int iter, i;
 
-    //Make sure start is greater than end
-    if (srcStart <= srcEnd)
+    //Make sure start is less than end
+    if (srcStart > srcEnd)
         return -1;
 
     //Make sure end is less than maxLen
@@ -57,6 +57,37 @@ int copySubStr(char src[], char dest[], int srcStart, int srcEnd, int maxLen){
     //Return length of dest
     return i;
 }
+//**getIndentLevel**
+//Returns the indent level of a string, calculated by the number of spaces or tabs before the first non-whitespace character
+int getIndentLevel(char src[], int numSpaces);
+int getIndentLevel(char src[], int numSpaces){
+    int indentLevel = 0;
+    int i;
+    int spaceCount = 0; //For keeping track of how many spaces have been found so far
+
+    //loop through string and check for whitespace until first non-whitespace character found
+    for (i = 0; i < MAXLENGTH && src[i] != '\0'; i++){
+        if (src[i] == 32)
+        {
+            spaceCount++;
+        }
+        else if (src[i] == '\t')
+        {
+            indentLevel++;
+        }
+        else break;
+
+        //Check if a new indent level has been reached; if so, reset count
+        if (spaceCount == numSpaces)
+        {
+            indentLevel++;
+            spaceCount = 0;
+        }
+    }
+
+    return indentLevel;
+
+} //End getIndentLevel
 //**indexOfStr**
 //Finds and returns the index of the first char of subStr in mainStr, or -1 if not found
 int indexOfStr(char *mainStr, char *subStr);
@@ -74,6 +105,45 @@ int indexOfStr(char *mainStr, char *subStr){
 
     //Shouldn't happen, but as a safety net
     return 0;
+}
+//**pairMarkers**
+//Given an opening marker index and the closing marker char, finds the matching closing marker for the opening marker at the index in src
+int pairMarkers(int openIndex, char closingChar, char src[]);
+int pairMarkers(int openIndex, char closingChar, char src[]){
+
+    /*This function works by counting the number of markers found so far. The counter starts at 0. When the program finds another opening marker, it increases the counter by 1. When it finds the next closing marker, it decreases the counter by 1. When the counter reaches zero again and the closing marker is found, it must be the corresponding closing marker for the given opening one.*/
+
+    int i, counter;
+    char openingChar;
+
+    counter = 0;
+
+    //Make sure that openIndex is actually within the bounds of src's length
+    if (strlen(src) <= openIndex)
+        return -2;
+
+    //Look through src for the closing marker, starting at the given index
+    i = openIndex;
+    openingChar = src[i];
+    while (src[i] != '\0'){
+        if (src[i] == openingChar)
+        {
+            counter++;
+        }
+        else if (src[i] == closingChar)
+        {
+            counter--;
+            if (counter == 0)
+            {
+                return i;
+            }
+        }
+        else ;
+        i++;
+    }
+
+    //-1 means closing char not found
+    return -1;
 }
 //**stof**
 double stof(char s[]);
