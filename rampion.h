@@ -4,19 +4,62 @@
 
 /****FUNCTIONS****/
 
-//**bgetline**
-int bgetline(char s[], int putNl);
-int bgetline(char s[], int putNl){
+//**myGetline**
+//Gets a line of input from the keyboard.
+int myGetline(char s[], int maxLen, int putNl);
+int myGetline(char s[], int maxLen, int putNl){
+	#ifndef TRUE
+	#define TRUE 1
+	#endif
+
 	int i, c;
 
-	for (i=0; i<10000-1 && (c=getchar()) !='$' && c!='\n'; ++i)
+	for (i = 0; i < maxLen-1 && (c = getchar())  != '\n'; ++i){
 		s[i] = c;
-	if ((c == '\n') && (putNl == 1))
+    }
+	if ((c == '\n') && (putNl == TRUE))
 	{
-		s[i++] = c;
+		s[i] = c;
+		++i;
 	}
 	s[i] = '\0';
 	return i;
+} //end of myGetline
+
+//Turns an array of characters, separated by a specific character, into an array of integers. intArr must be long enough to hold the result.
+void charArrayToIntArray(char charArr[], int intArr[], char separator, int acceptNewline){
+    #ifndef TRUE
+    #define TRUE 1
+    #endif
+    int start, stop, place, i;
+    start = stop = place = i = 0;
+    int subLen = 0;
+    for (i = 0; charArr[i] != '\0'; i++){
+        //If the character is a separator, or the newlines are accepted as separators and the char is a newline or carriage return,
+        //then get the substring and convert it to an integer
+        if (charArr[i] == separator || (acceptNewline == TRUE && (charArr[i] == '\n' || charArr[i] == '\r'))){
+            stop = i;
+            if (start < stop){
+                char temp[stop - start + 1];
+                subLen = copySubStr(temp, charArr, start, stop, stop);
+                //printf("Sublen: %i start: %i stop %i\n", subLen, start, stop);
+                if (subLen > 0){
+                    intArr[place++] = atoi(temp);
+                    start = stop;
+                }
+                else {
+                    //printf("DEBUG: error: copySubStr did not return the proper value\n");
+                }
+            }
+        }
+        //Only change start if a value has been copied already (signified by start being the same as stop)
+        if (isdigit(charArr[i]) && start == stop){
+            start = i;
+        }
+    }
+
+    intArr[place] = '\0';
+    return;
 }
 //**compStr**
 int compStr(char s1[], char s2[]);
@@ -31,8 +74,8 @@ int compStr(char s1[], char s2[]){
 }
 //**copySubStr**
 //Copies a substring from src to dest using subStart and subEnd as indexes. Copies at most maxLen chars, not including the NULL pointer
-int copySubStr(char src[], char dest[], int srcStart, int srcEnd, int maxLen);
-int copySubStr(char src[], char dest[], int srcStart, int srcEnd, int maxLen){
+int copySubStr(char dest[], char src[], int srcStart, int srcEnd, int maxLen);
+int copySubStr(char dest[], char src[], int srcStart, int srcEnd, int maxLen){
     int iter, i;
 
     //Make sure start is less than end
