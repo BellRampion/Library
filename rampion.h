@@ -1,18 +1,49 @@
-/*rampion.h*/
+/*
+rampion.h
+
+Copyright (C) 2021 Bailie Livingston
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 //Functions are listed in alphebetical order before macros. Each group is sorted within itself.
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
 /****FUNCTIONS****/
+void charArrayToIntArray(char charArr[], int intArr[], char separator, int acceptNewline);
+int compStr(char s1[], char s2[]);
+unsigned long copySubStr(char dest[], char src[], unsigned long srcStart, unsigned long srcEnd, unsigned long maxLen);
+int getIndentLevel(char src[], int numSpaces, int maxLen);
+unsigned long indexOfStr(char *mainStr, char *subStr);
+unsigned long myGetline(char s[], unsigned long maxLen, short putNl);
+unsigned long pairMarkers(int openIndex, char closingChar, char src[]);
+double stof(char s[]);
+char stringCopy(char *s, char *s2);
 
 //**myGetline**
 //Gets a line of input from the keyboard.
-int myGetline(char s[], int maxLen, int putNl);
-int myGetline(char s[], int maxLen, int putNl){
+unsigned long myGetline(char s[], unsigned long maxLen, short putNl){
 	#ifndef TRUE
 	#define TRUE 1
 	#endif
 
-	int i, c;
+	unsigned long i;
+	int c;
 
 	for (i = 0; i < maxLen-1 && (c = getchar())  != '\n'; ++i){
 		s[i] = c;
@@ -31,9 +62,9 @@ void charArrayToIntArray(char charArr[], int intArr[], char separator, int accep
     #ifndef TRUE
     #define TRUE 1
     #endif
-    int start, stop, place, i;
+    unsigned long start, stop, place, i;
     start = stop = place = i = 0;
-    int subLen = 0;
+    unsigned long subLen = 0;
     for (i = 0; charArr[i] != '\0'; i++){
         //If the character is a separator, or the newlines are accepted as separators and the char is a newline or carriage return,
         //then get the substring and convert it to an integer
@@ -62,9 +93,8 @@ void charArrayToIntArray(char charArr[], int intArr[], char separator, int accep
     return;
 }
 //**compStr**
-int compStr(char s1[], char s2[]);
 int compStr(char s1[], char s2[]){
-	int i = 0;
+	unsigned long i = 0;
 
 	for (i = 0; s1[i] == s2[i]; i++){ //i and j start out at 0. Test to see if the end of 's1' has been reached.
         if (s1[i] == '\0')
@@ -74,9 +104,8 @@ int compStr(char s1[], char s2[]){
 }
 //**copySubStr**
 //Copies a substring from src to dest using subStart and subEnd as indexes. Copies at most maxLen chars, not including the NULL pointer
-int copySubStr(char dest[], char src[], int srcStart, int srcEnd, int maxLen);
-int copySubStr(char dest[], char src[], int srcStart, int srcEnd, int maxLen){
-    int iter, i;
+unsigned long copySubStr(char dest[], char src[], unsigned long srcStart, unsigned long srcEnd, unsigned long maxLen){
+    unsigned long iter, i;
 
     //Make sure start is less than end
     if (srcStart > srcEnd)
@@ -102,14 +131,13 @@ int copySubStr(char dest[], char src[], int srcStart, int srcEnd, int maxLen){
 }
 //**getIndentLevel**
 //Returns the indent level of a string, calculated by the number of spaces or tabs before the first non-whitespace character
-int getIndentLevel(char src[], int numSpaces);
-int getIndentLevel(char src[], int numSpaces){
+int getIndentLevel(char src[], int numSpaces, int maxLen){
     int indentLevel = 0;
     int i;
     int spaceCount = 0; //For keeping track of how many spaces have been found so far
 
     //loop through string and check for whitespace until first non-whitespace character found
-    for (i = 0; i < MAXLENGTH && src[i] != '\0'; i++){
+    for (i = 0; i < maxLen && src[i] != '\0'; i++){
         if (src[i] == 32)
         {
             spaceCount++;
@@ -133,15 +161,14 @@ int getIndentLevel(char src[], int numSpaces){
 } //End getIndentLevel
 //**indexOfStr**
 //Finds and returns the index of the first char of subStr in mainStr, or -1 if not found
-int indexOfStr(char *mainStr, char *subStr);
-int indexOfStr(char *mainStr, char *subStr){
-    int index;
+unsigned long indexOfStr(char *mainStr, char *subStr){
+    unsigned long index;
     char *result;
 
     //If the substring is in the main string, find and return the index
     if (result = strstr(mainStr, subStr) != NULL)
     {
-        index = result - mainStr;
+        return result - mainStr;
     }
     //If no match, return -1
     else return -1;
@@ -151,12 +178,11 @@ int indexOfStr(char *mainStr, char *subStr){
 }
 //**pairMarkers**
 //Given an opening marker index and the closing marker char, finds the matching closing marker for the opening marker at the index in src
-int pairMarkers(int openIndex, char closingChar, char src[]);
-int pairMarkers(int openIndex, char closingChar, char src[]){
+unsigned long pairMarkers(int openIndex, char closingChar, char src[]){
 
     /*This function works by counting the number of markers found so far. The counter starts at 0. When the program finds another opening marker, it increases the counter by 1. When it finds the next closing marker, it decreases the counter by 1. When the counter reaches zero again and the closing marker is found, it must be the corresponding closing marker for the given opening one.*/
 
-    int i, counter;
+    unsigned long i, counter;
     char openingChar;
 
     counter = 0;
@@ -189,11 +215,10 @@ int pairMarkers(int openIndex, char closingChar, char src[]){
     return -1;
 }
 //**stof**
-double stof(char s[]);
 double stof(char s[]){
 
     double val, power;
-    int i, sign;
+    unsigned long i, sign;
     i = 0;
 
     sign = (s[i] == '-') ? -1 : 1;
@@ -215,9 +240,8 @@ double stof(char s[]){
 
     return sign * val / power; //returns the string converted to a double
 }
-char stringCopy(char *s, char *s2);
 char stringCopy(char *s, char *s2){
-    while(*s++ = *s2++){
+    while(*(s++) = *(s2++)){
         ;
      }
     return *s;
@@ -226,7 +250,7 @@ char stringCopy(char *s, char *s2){
 /****MACROS****/
 
 //ctoi
-#define ctoi(c) i = (c -'0');
+#define ctoi(c) c -'0'
 
 //fileLength
 #define fileLength(fp, filelength, fileName, s) fp = fopen(fileName, "r"); \
